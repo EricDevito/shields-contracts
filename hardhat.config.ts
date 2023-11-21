@@ -3,6 +3,7 @@ import 'hardhat-typechain'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-etherscan'
+import "@nomicfoundation/hardhat-foundry";
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -44,30 +45,57 @@ export default {
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.MAINNET_DEPLOYER],
+      accounts: [process.env.DEPLOYER!].filter(Boolean),
     },
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.DEPLOYER],
+      accounts: [process.env.DEPLOYER!].filter(Boolean),
     },
     goerli: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [process.env.DEPLOYER],
+      accounts: [process.env.DEPLOYER!].filter(Boolean),
     },
     kovan: {
       url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    },
+    zora: {
+      url: `https://rpc.zora.energy/`,
+      accounts: [process.env.DEPLOYER!].filter(Boolean),
+    },
+    "zora-goerli": {
+      url: `https://testnet.rpc.zora.energy/`,
+      accounts: [process.env.DEPLOYER!].filter(Boolean),
     },
   },
   namedAccounts: {
     deployer: 0,
   },
   etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      zora: process.env.ZORA_BLOCKSCOUT_KEY!,
+      "zora-goerli": "",
+     },
+    customChains: [
+      {
+        network: "zora",
+        chainId: 7777777,
+        urls: {
+         apiURL: 'https://explorer.zora.energy/api',
+         browserURL: "https://explorer.zora.energy/"
+        }
+      },
+      {
+        network: "zora-goerli",
+        chainId: 999,
+        urls: {
+         apiURL: 'https://testnet.explorer.zora.energy/',
+         browserURL: "https://explorer.zora.energy/testnet"
+        }
+      },
+    ]
   },
   solidity: {
     compilers: [DEFAULT_COMPILER_SETTINGS],
